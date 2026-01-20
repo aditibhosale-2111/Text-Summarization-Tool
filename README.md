@@ -1,6 +1,9 @@
 # Text-Summarization-Tool
 A simple AI-powered text summarization web application built using Flask. The app provides a clean web interface and a REST API to summarize long text into concise summaries.
 
+## 🔗 Live Demo
+https://text-summarization-tool-m5as.onrender.com/
+
 Features:
 -Web-based UI for text summarization
 -REST API endpoint (/api/summarize)
