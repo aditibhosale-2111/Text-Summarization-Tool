@@ -4,3 +4,6 @@ requests
 python-dotenv
 PyPDF2
 gunicorn
+transformers
+torch
+
