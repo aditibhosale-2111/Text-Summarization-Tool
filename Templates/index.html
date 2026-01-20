@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Text Summarizer</title>
+
+  <!-- jsPDF -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Times New Roman", serif !important;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #196c90, #0c4e6b);
+      color: #062525;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      padding: 20px 18px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #eaf6f3;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ffb07c, #ff6b6b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .nav-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      font-weight: bold;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 12px;
+    }
+
+    /* Main */
+    .main {
+      flex: 1;
+      padding: 20px 40px;
+    }
+
+    .header {
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 30px;
+      color: #f3fff8;
+    }
+
+    .subtitle {
+      color: #e8fffb;
+      font-size: 14px;
+    }
+
+    .content {
+      max-width: 900px;
+      margin: 20px auto;
+    }
+
+    .card {
+      background: white;
+      padding: 28px;
+      border-radius: 15px;
+      box-shadow: 0 14px 38px rgba(0, 0, 0, 0.18);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 220px;
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      resize: vertical;
+      font-size: 15px;
+    }
+
+    .primary {
+      width: 100%;
+      margin-top: 18px;
+      padding: 14px;
+      background: linear-gradient(90deg, #ff9966, #ff5e62);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .output-box {
+      margin-top: 12px;
+      background: #f7f8fb;
+      padding: 18px;
+      border-radius: 10px;
+      min-height: 120px;
+      white-space: pre-wrap;
+    }
+
+    .controls-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .ghost {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: white;
+      cursor: pointer;
+    }
+
+    .error {
+      color: #b22222;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        display: none;
+      }
+      .main {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">💡</div>
+        <div>
+          <div><b>AI Summarizer</b></div>
+          <div style="font-size: 12px">Text Only</div>
+        </div>
+      </div>
+
+      <button class="nav-btn">Text Summarizer</button>
+
+      <div class="sidebar-footer">
+        Built by <b>Aditi Bhosale</b>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <div class="header">
+        <h1>💡 AI Text Summarizer</h1>
+        <div class="subtitle">Turn long text into concise summaries</div>
+      </div>
+
+      <div class="content">
+        <div class="card">
+
+          <textarea id="inputText" placeholder="Paste or type long text here..."></textarea>
+
+          <button class="primary" id="summarizeTextBtn">Summarize</button>
+
+          <div class="output-box" id="output">Summary will appear here.</div>
+
+          <div class="controls-row">
+            <button class="ghost" id="copyTextSummary">Copy</button>
+            <button class="ghost" id="downloadTextPDF">Download PDF</button>
+          </div>
+
+          <p class="error" id="error"></p>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    const el = id => document.getElementById(id);
+
+    // Summarize
+    document.getElementById('summarizeTextBtn').onclick = async () => {
+      el('error').innerText = '';
+      el('output').innerText = '⏳ Summarizing...';
+
+      const text = el('inputText').value.trim();
+      if (!text) {
+        el('output').innerText = '';
+        el('error').innerText = 'Please enter some text.';
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/summarize', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          el('output').innerText = '';
+          el('error').innerText = data.error || 'Server error.';
+          return;
+        }
+
+        el('output').innerText = data.summary || 'No summary returned.';
+      } catch (err) {
+        el('error').innerText = 'Network error';
+        el('output').innerText = '';
+      }
+    };
+
+    // Copy
+    document.getElementById('copyTextSummary').onclick = () => {
+      const summary = el('output').innerText;
+      if (!summary) return alert('Nothing to copy.');
+      navigator.clipboard.writeText(summary);
+      alert('Copied!');
+    };
+
+    // Download PDF
+    const { jsPDF } = window.jspdf;
+    document.getElementById('downloadTextPDF').onclick = () => {
+      const summary = el('output').innerText;
+      if (!summary) return alert('Nothing to download.');
+
+      const doc = new jsPDF('p', 'mm', 'a4');
+      const marginX = 20;
+      const marginY = 30;
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const usableWidth = pageWidth - marginX * 2;
+
+      doc.setFont('Times', 'normal');
+      doc.setFontSize(14);
+      doc.text('Text Summary', marginX, 20);
+
+      const wrappedText = doc.splitTextToSize(summary, usableWidth);
+      doc.text(wrappedText, marginX, marginY);
+
+      doc.save('summary.pdf');
+    };
+  </script>
+</body>
+</html>

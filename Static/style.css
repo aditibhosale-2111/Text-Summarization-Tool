@@ -1,0 +1,98 @@
+
+
+/* Force Times New Roman */
+* { box-sizing: border-box; font-family: "Times New Roman", serif !important; }
+
+/* page background */
+body{
+  margin:0;
+  min-height:100vh;
+  background: linear-gradient(180deg,#0f6b66 0%, #2b8f86 100%);
+  color:#062525;
+}
+
+/* app layout */
+.app{display:flex;align-items:stretch;min-height:100vh}
+
+/* sidebar */
+.sidebar{
+  width:220px;
+  background: rgba(255,255,255,0.04);
+  padding:22px 18px;
+  color:#eaf6f3;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  border-right:1px solid rgba(0,0,0,0.08);
+}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,#ffb07c,#ff6b6b);display:flex;align-items:center;justify-content:center;font-size:22px}
+.brand-title{font-weight:700;font-size:16px}
+.brand-sub{font-size:12px;opacity:0.9}
+
+/* nav */
+.nav{margin-top:18px}
+.nav-btn{display:block;width:100%;text-align:left;padding:10px 12px;border-radius:8px;background:transparent;border:none;color:inherit;cursor:default;opacity:0.95}
+.nav-btn.active{background:rgba(255,255,255,0.06)}
+
+/* footer */
+.sidebar-footer{font-size:12px;color:rgba(255,255,255,0.9)}
+
+/* main content */
+.main{flex:1;padding:28px;overflow:auto}
+.header h1{margin:0;color:#f3fff8;font-size:28px}
+.subtitle{margin-top:6px;color:rgba(243,255,248,0.9);font-size:14px}
+
+/* content center */
+.content{max-width:980px;margin:18px auto;padding-bottom:80px}
+
+/* card */
+.card{
+  background:#fff;border-radius:14px;padding:26px 30px;box-shadow:0 12px 40px rgba(0,0,0,0.18);
+  color:#0b3a38;
+}
+
+/* card head */
+.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.card-title{font-weight:700;font-size:18px}
+.card-subtitle{font-size:13px;color:#6b6b6b}
+
+/* label and textarea */
+.label{display:block;margin-top:8px;margin-bottom:8px;font-weight:600}
+textarea{
+  width:100%;min-height:220px;padding:16px;border-radius:10px;border:1px solid #eee;font-size:15px;resize:vertical;
+  background:#fff;box-shadow:none;line-height:1.5;
+}
+
+/* options row */
+.options{display:flex;gap:18px;margin-top:14px}
+.opt{flex:1}
+.opt input{width:100%;padding:12px;border-radius:10px;border:1px solid #eee;font-size:15px}
+
+/* buttons */
+.row.action-row{margin-top:18px}
+.primary{
+  width:100%;padding:14px;border-radius:10px;border:none;background:linear-gradient(90deg,#ff9966,#ff5e62);
+  color:white;font-weight:700;font-size:16px;cursor:pointer;box-shadow:0 8px 22px rgba(255,94,98,0.18);
+}
+.primary:hover{transform:translateY(-2px);transition:all .18s}
+
+/* summary area */
+.section-title{margin-top:20px;margin-bottom:8px}
+.output-box{background:#f7f8fb;border:1px solid #ececff;padding:18px;border-radius:10px;min-height:140px;color:#0b3a38;white-space:pre-wrap}
+
+/* control buttons */
+.controls-row{display:flex;gap:12px;margin-top:12px}
+.ghost{padding:8px 12px;border-radius:8px;border:1px solid #e7e7e7;background:#fff;cursor:pointer}
+
+/* error */
+.error{color:#b22222;margin-top:10px}
+
+/* responsive */
+@media (max-width: 900px){
+  .sidebar{display:none}
+  .content{margin:10px}
+  .card{padding:18px}
+  textarea{min-height:180px}
+  .options{flex-direction:column}
+}
